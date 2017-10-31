@@ -1,5 +1,6 @@
 /* global __dirname, require, module */
 const path = require('path')
+const webpack = require('webpack')
 const config = require('../config')
 const resolve = (dir) => {
   return path.join(__dirname, '..', dir)
@@ -10,7 +11,6 @@ module.exports = {
     path: config.base.distDirectory,
     filename: config.base.fileName + (process.env.NODE_ENV === 'production' ? '.min.js' : '.js'),
     library: config.base.libraryName,
-    chunkFilename: '../dist/[name].js',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
@@ -44,5 +44,7 @@ module.exports = {
       '@': resolve('src')
     }
   },
-  plugins: []
+  plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin()
+  ]
 }

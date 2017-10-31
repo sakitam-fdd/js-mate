@@ -9,8 +9,8 @@ module.exports = {
     devtoolSourceMap: '#source-map'
   },
   base: {
-    fileName: 'hmap',
-    libraryName: 'HMap',
+    fileName: 'js-mate',
+    libraryName: 'Mate',
     distDirectory: path.resolve(__dirname, '../dist')
   }
 }
