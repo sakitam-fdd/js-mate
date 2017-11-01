@@ -1,5 +1,5 @@
-const getElement = () => {
-  return '1122'
+const getElement = (params) => {
+  return params
 }
 
 export default {

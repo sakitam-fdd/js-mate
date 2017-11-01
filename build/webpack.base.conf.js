@@ -30,16 +30,13 @@ module.exports = {
         loader: 'babel-loader',
         include: [
           resolve('src'),
-          resolve('node_modules/ol-extent/src'),
-          resolve('node_modules/nature-dom-util/src'),
-          resolve('node_modules/observable-emit/src'),
           resolve('test')
         ]
       }
     ]
   },
   resolve: {
-    extensions: ['.json', '.js'],
+    extensions: ['.json', '.js', '.ts'],
     alias: {
       '@': resolve('src')
     }
