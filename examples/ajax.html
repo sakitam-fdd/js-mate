@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="my" id="my"></div>
+<div class="my" id="my2"></div>
+<script src="../dist/js-mate.js"></script>
+<script type="text/javascript">
+  Mate.ajax.get("../package.json", {aa: 8, bb: 9, tt: {xx: 5}})
+    .then(function (d) {
+      console.log("get result:", d)
+    }).catch(function (e) {
+    console.log("error", e)
+  })
+
+  Mate.ajax.post("../package.json", {aa: 8, bb: 9, tt: {xx: 5}})
+    .then(function (d) {
+      console.log("post result:", d)
+    }).catch(function (e) {
+    console.log("error", e)
+  })
+
+  Mate.ajax.request("../package.json", {hh: 5}, {method: "post"})
+    .then(function (d) {
+      console.log("ajax result:", d)
+    })
+</script>
+</body>
+</html>

@@ -40,6 +40,10 @@ const baseGetTag = (value) => {
   return result
 }
 
+const TypeOf = (ob) => {
+  return Object.prototype.toString.call(ob).slice(8, -1).toLowerCase()
+}
+
 /**
  * 判断是否为函数
  * @param value
@@ -284,6 +288,65 @@ const extend = (target, ob) => {
   return target
 }
 
+/**
+ * 判断是否为表单数据
+ * @param val
+ * @returns {boolean}
+ */
+const isFormData = (val) => {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData)
+}
+
+/**
+ * 编码请求地址
+ * @param val
+ * @returns {string}
+ */
+const encode = (val) => {
+  return encodeURIComponent(val)
+    .replace(/%40/gi, '@')
+    .replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']')
+}
+
+/**
+ * 格式化请求参数
+ * @param data
+ * @returns {string}
+ */
+const formatParams = (data) => {
+  let arr = []
+  for (let name in data) {
+    let value = data[name]
+    if (isObject(value)) {
+      value = JSON.stringify(value)
+    }
+    arr.push(encode(name) + '=' + encode(value))
+  }
+  return arr.join('&')
+}
+
+/**
+ * 合并对象
+ * @param a
+ * @param b
+ * @returns {*}
+ */
+const merge = (a, b) => {
+  for (let key in b) {
+    if (!a.hasOwnProperty(key)) {
+      a[key] = b[key]
+    } else if (isObject(b[key]) && isObject(a[key])) {
+      merge(a[key], b[key])
+    }
+  }
+  return a
+}
+
 export {
   toArray,
   isArray,
@@ -299,5 +362,10 @@ export {
   isWindow,
   each,
   unique,
-  extend
+  extend,
+  isFormData,
+  encode,
+  formatParams,
+  merge,
+  TypeOf
 }
