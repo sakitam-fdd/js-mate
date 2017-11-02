@@ -1,5 +1,11 @@
 import {isFunction, isString, isArray, toArray} from '../utils/index'
 import { wrapMap } from '../constants'
+
+/**
+ * 解析html模板
+ * @param HTMLString
+ * @returns {Node}
+ */
 const parseDom = function (HTMLString) {
   let tmp = document.createElement('div')
   let tag = /[\w:-]+/.exec(HTMLString)[0]
@@ -20,6 +26,11 @@ const parseDom = function (HTMLString) {
   return node
 }
 
+/**
+ * 选择器
+ * @param selector
+ * @returns {*}
+ */
 const selectElements = function (selector) {
   let found
   return (document && /^#([\w-]+)$/.test(selector))
@@ -31,31 +42,39 @@ const selectElements = function (selector) {
         : document.querySelectorAll(selector))
 }
 
+/**
+ * 要素选择器
+ * @param selector
+ * @param context
+ * @returns {Array}
+ * @constructor
+ */
 const ElementSelector = function (selector, context) {
   context = context || document
+  let domInstance = []
   if (isFunction(selector)) {
-    this.domInstance = new ElementSelector(document).ready(selector)
-    return this.domInstance
+    domInstance = new ElementSelector(document).ready(selector)
+    return domInstance
   } else if (isString(selector)) {
     if ((selector = selector.trim()) &&
     selector[0] === '<' && /^\s*<(\w+|!)[^>]*>/.test(selector)) {
-      this.domInstance = [parseDom(selector)]
+      domInstance = parseDom(selector)
     } else {
-      this.domInstance = context && context instanceof ElementSelector
+      domInstance = context && context instanceof ElementSelector
         ? context.find(selector)
         : selectElements(selector)
     }
   } else if (isArray(selector)) {
-    // this.domInstance = sanitize(selector)
+    domInstance = selector
   } else if (selector instanceof NodeList ||
     selector instanceof HTMLCollection) {
-    this.domInstance = toArray(selector)
+    domInstance = toArray(selector)
   } else if (selector instanceof ElementSelector) {
-    this.domInstance = selector
-    return this.domInstance
+    domInstance = selector
   } else {
-    this.domInstance = selector ? [selector] : []
+    domInstance = selector ? [selector] : []
   }
+  Array.prototype.push.apply(this, domInstance)
 }
 
 export default ElementSelector

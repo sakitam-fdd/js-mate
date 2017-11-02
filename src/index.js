@@ -1,4 +1,7 @@
-import Mate from './element/selector'
-export function $ (selector, context) {
-  return new Mate(selector, context)
+import './polyfill/trim'
+import ElementSelector from './element/selector'
+function Meta (selector, context) {
+  return new ElementSelector(selector, context)
 }
+
+export default Meta
