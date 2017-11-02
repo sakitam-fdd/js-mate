@@ -9,8 +9,13 @@
 <div class="my" id="my2"></div>
 <script src="../dist/js-mate.js"></script>
 <script type="text/javascript">
+  var div = '<span></span>'
   var mate = Mate('.my')
-  console.log(mate)
+  console.log(mate.hasClass('my'))
+
+  var mate_ = Mate(mate)
+
+  console.log(mate_)
 </script>
 </body>
 </html>

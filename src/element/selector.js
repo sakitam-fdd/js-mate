@@ -1,4 +1,6 @@
-import {isFunction, isString, isArray, toArray} from '../utils/index'
+import mixins from '../utils/mixins'
+import {isFunction, isString, isArray, toArray, unique} from '../utils/index'
+import prototype from '../methods/static'
 import { wrapMap } from '../constants'
 
 /**
@@ -58,7 +60,7 @@ const ElementSelector = function (selector, context) {
   } else if (isString(selector)) {
     if ((selector = selector.trim()) &&
     selector[0] === '<' && /^\s*<(\w+|!)[^>]*>/.test(selector)) {
-      domInstance = parseDom(selector)
+      domInstance = [parseDom(selector)]
     } else {
       domInstance = context && context instanceof ElementSelector
         ? context.find(selector)
@@ -74,7 +76,8 @@ const ElementSelector = function (selector, context) {
   } else {
     domInstance = selector ? [selector] : []
   }
-  Array.prototype.push.apply(this, domInstance)
+  Array.prototype.push.apply(this, unique(domInstance))
 }
-
+ElementSelector.prototype = Object.create(Array.prototype)
+mixins(ElementSelector, prototype)
 export default ElementSelector

@@ -9,8 +9,10 @@
     "travisDev": "node build/development.js --env nowatch",
     "build": "node build/build.js"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
+    "ora": "^1.3.0",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^7.1.1",
