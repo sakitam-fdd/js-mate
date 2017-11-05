@@ -6,5 +6,4 @@ const Meta = (selector, context) => {
 }
 
 Meta.ajax = new Ajax()
-
 export default Meta
