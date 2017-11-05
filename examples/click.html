@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>点击事件</title>
+</head>
+<body>
+<button class="my" id="my">按钮1</button>
+<button class="my" id="my2">按钮2</button>
+<script src="../dist/js-mate.js"></script>
+<script type="text/javascript">
+  Mate(document).on('click', function (event) {
+    console.log(event)
+  });
+  Mate('#my').on('click', function (event) {
+    console.log(event)
+  });
+  Mate('#my2').on('click', function (event) {
+    console.log(event)
+  });
+</script>
+</body>
+</html>
