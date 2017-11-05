@@ -13,10 +13,12 @@
     console.log(event)
   });
   Mate('#my').on('click', function (event) {
-    console.log(event)
+    console.log(event);
+    event.stopPropagation();
   });
   Mate('#my2').on('click', function (event) {
-    console.log(event)
+    console.log(event);
+    event.stopPropagation();
   });
 </script>
 </body>

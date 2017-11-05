@@ -280,6 +280,12 @@ const clone = () => {
   return target
 }
 
+/**
+ * 扩展
+ * @param target
+ * @param ob
+ * @returns {*}
+ */
 const extend = (target, ob) => {
   for (let i in ob) {
     Object.hasOwnProperty()
