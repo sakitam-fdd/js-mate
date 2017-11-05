@@ -1,5 +1,5 @@
 import ElementSelector from '../element/selector'
-const prototype = {
+class Prototype {
   ready (callback) {
     if (/complete|loaded|interactive/.test(document.readyState) && document.body) {
       callback(ElementSelector)
@@ -9,13 +9,13 @@ const prototype = {
       }, false)
     }
     return this
-  },
+  }
   each (callback) {
     this.every(function (el, idx) {
       return callback.call(el, el, idx) !== false
     })
     return this
-  },
+  }
   text (s, type) {
     type = type || 'textContent'
     if (s) {
@@ -26,22 +26,22 @@ const prototype = {
       type = this[0] ? this[0][type] : ''
     }
     return type
-  },
+  }
   html (s) {
     return this.text(s, 'innerHTML')
-  },
+  }
   hasClass (cls) {
     let first = this[0]
     if (!(first && first.className)) return false
     return !!first.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
-  },
+  }
   addClass (cls) {
     return this.each(f => {
       if (!ElementSelector(f).hasClass(cls)) {
         f.className += ' ' + cls
       }
     })
-  },
+  }
   removeClass (cls) {
     return this.each(f => {
       if (ElementSelector(f).hasClass(cls)) {
@@ -51,7 +51,4 @@ const prototype = {
     })
   }
 }
-
-export default {
-  prototype
-}
+export default Prototype

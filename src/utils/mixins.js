@@ -10,15 +10,14 @@ const copyProperties = (target, source) => {
     }
   }
 }
-
-const mixin = (target, ...mixins) => {
+const mixin = (...mixins) => {
+  class Mix {}
   // 以编程方式给Mix类添加mixin的所有方法和访问器
   for (let key in mixins) {
     let mixin = mixins[key]
-    copyProperties(target, mixin)
-    copyProperties(target.prototype, mixin.prototype)
+    copyProperties(Mix, mixin)
+    copyProperties(Mix.prototype, mixin.prototype)
   }
-  return target
+  return Mix
 }
-
 export default mixin
