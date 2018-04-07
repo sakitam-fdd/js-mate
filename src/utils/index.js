@@ -7,7 +7,13 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 const objectCtorString = funcToString.call(Object)
 const objectProto = Object.prototype
 const toString = objectProto.toString
-const symToStringTag = typeof Symbol !== 'undefined' ? Symbol.toStringTag : undefined
+const symToStringTag = typeof Symbol !== 'undefined' ? Symbol.toStringTag : undefined;
+const byteToHex = [];
+const rnds = new Array(16);
+for (let i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
 /**
  * 获取对象基础标识
  * @param value
@@ -102,17 +108,7 @@ const isArray = arr => {
  */
 const isArrayLike = value => {
   return value !== null && typeof value !== 'function' && isLength(value.length)
-}
-
-/**
- * 判断是否为字符串
- * @param value
- * @returns {boolean}
- */
-const isString = value => {
-  const type = typeof value
-  return type === 'string'
-}
+};
 
 /**
  * 转换为数组
@@ -229,7 +225,7 @@ const unique = (arrayLike) => {
  * clone or deepClone
  * @returns {null}
  */
-const clone = () => {
+const clone = function () {
   let [options, name, src, copy, copyIsArray, _clone] = []
   let [target, length, i, deep] = [arguments[0], arguments.length, 1, false]
   // 处理深拷贝的情况
@@ -301,7 +297,97 @@ const extend = (target, ob) => {
  */
 const isFormData = (val) => {
   return (typeof FormData !== 'undefined') && (val instanceof FormData)
-}
+};
+
+/**
+ * is date value
+ * @param val
+ * @returns {boolean}
+ */
+const isDate = (val) => {
+  return toString.call(val) === '[object Date]';
+};
+
+/**
+ * is array buffer
+ * @param val
+ * @returns {boolean}
+ */
+const isArrayBuffer = (val) => {
+  return toString.call(val) === '[object ArrayBuffer]';
+};
+
+/**
+ * 判断是否为合法字符串
+ * @param value
+ * @returns {boolean}
+ */
+const isString = (value) => {
+  if (value == null) {
+    return false;
+  }
+  return typeof value === 'string' || (value.constructor !== null && value.constructor === String);
+};
+
+/**
+ * form uuid
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ * @param buf
+ * @param offset
+ * @returns {string}
+ */
+const bytesToUuid = (buf, offset) => {
+  let i = offset || 0;
+  const bth = byteToHex;
+  return bth[buf[i++]] + bth[buf[i++]] +
+    bth[buf[i++]] + bth[buf[i++]] + '-' +
+    bth[buf[i++]] + bth[buf[i++]] + '-' +
+    bth[buf[i++]] + bth[buf[i++]] + '-' +
+    bth[buf[i++]] + bth[buf[i++]] + '-' +
+    bth[buf[i++]] + bth[buf[i++]] +
+    bth[buf[i++]] + bth[buf[i++]] +
+    bth[buf[i++]] + bth[buf[i++]];
+};
+
+/**
+ * math rng
+ * @returns {any[]}
+ */
+const mathRNG = () => {
+  for (let i = 0, r; i < 16; i++) {
+    if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+    rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+  }
+  return rnds;
+};
+
+/**
+ * get uuid
+ * @param options
+ * @param buf
+ * @param offset
+ * @returns {*|string}
+ */
+const uuid = (options, buf, offset) => {
+  /* eslint-disable */
+  const i = buf && offset || 0;
+  if (typeof (options) === 'string') {
+    buf = options === 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+  const rnds = options.random || (options.rng || mathRNG)();
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (let ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+  return buf || bytesToUuid(rnds);
+};
 
 /**
  * 编码请求地址
@@ -317,7 +403,16 @@ const encode = (val) => {
     .replace(/%20/g, '+')
     .replace(/%5B/gi, '[')
     .replace(/%5D/gi, ']')
-}
+};
+
+/**
+ * is search params
+ * @param val
+ * @returns {boolean}
+ */
+const isURLSearchParams = (val) => {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+};
 
 /**
  * 格式化请求参数
@@ -351,9 +446,57 @@ const merge = (a, b) => {
     }
   }
   return a
-}
+};
+
+/**
+ * foreach object or array
+ * @param obj
+ * @param fn
+ */
+const forEach = (obj, fn) => {
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+  if (typeof obj !== 'object') {
+    obj = [obj];
+  }
+  if (Array.isArray(obj)) {
+    for (let i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    for (let key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+};
+
+/**
+ * check isEmpty object
+ * @param object
+ * @returns {boolean}
+ */
+const isEmpty = (object) => {
+  let property;
+  for (property in object) {
+    return false;
+  }
+  return !property;
+};
+
+/**
+ * check is null
+ * @param obj
+ * @returns {boolean}
+ */
+const isNull = (obj) => {
+  return obj == null;
+};
 
 export {
+  uuid,
   toArray,
   isArray,
   isArrayLike,
@@ -373,5 +516,11 @@ export {
   encode,
   formatParams,
   merge,
-  TypeOf
+  TypeOf,
+  isDate,
+  isArrayBuffer,
+  isURLSearchParams,
+  forEach,
+  isEmpty,
+  isNull
 }
